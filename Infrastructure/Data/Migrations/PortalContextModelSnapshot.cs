@@ -23,34 +23,36 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(180)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PictureUrl")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("ProductBrandId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ProductBrandId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid?>("ProductBrandId1")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ProductTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid?>("ProductTypeId1")
+                    b.Property<Guid>("ProductTypeId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductBrandId1");
+                    b.HasIndex("Id")
+                        .IsUnique();
 
-                    b.HasIndex("ProductTypeId1");
+                    b.HasIndex("ProductBrandId");
+
+                    b.HasIndex("ProductTypeId");
 
                     b.ToTable("Products");
                 });
@@ -87,11 +89,15 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Domains.ProductBrand", "ProductBrand")
                         .WithMany()
-                        .HasForeignKey("ProductBrandId1");
+                        .HasForeignKey("ProductBrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domains.ProductType", "ProductType")
                         .WithMany()
-                        .HasForeignKey("ProductTypeId1");
+                        .HasForeignKey("ProductTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ProductBrand");
 
