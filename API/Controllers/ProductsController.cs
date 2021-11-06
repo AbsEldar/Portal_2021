@@ -7,40 +7,59 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using Core.Interfaces;
 using Core.Specifications.SpecModels;
+using Core.Mediatr.Products.Queries.ProductDetails;
+using MediatR;
+using AutoMapper;
+using Core.Mediatr.Products.Queries.ProductList;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseController
     {
+        private readonly IMapper _mapper;
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<ProductBrand> _brandRepo;
         private readonly IGenericRepository<ProductType> _typeRepo;
 
-        public ProductsController(IGenericRepository<Product> productRepo,
+        public ProductsController(
+            IMapper mapper,
+            IGenericRepository<Product> productRepo,
             IGenericRepository<ProductBrand> brandRepo,
             IGenericRepository<ProductType> typeRepo)
         {
             _typeRepo = typeRepo;
             _brandRepo = brandRepo;
+            _mapper = mapper;
             _productRepo = productRepo;
         }
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<ProductListVm>> GetProducts()
         {
-            // var products = await _productRepo.ListAllAsync();
+            
+            // var spec = new ProductsWithTypesAndBrandsSpecification();
+            // var products = await _productRepo.ListAsync(spec);
+            // return Ok(products);
 
-            var spec = new ProductsWithTypesAndBrandsSpecification();
-            var products = await _productRepo.ListAsync(spec);
-            return Ok(products);
+             var query = new ProductListQuery{};
+            var vm = await Mediator.Send(query);
+            return Ok(vm);
+
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(Guid id)
+        public async Task<ActionResult<ProductDetailsVm>> GetProduct(Guid id)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification(id);
-           return await _productRepo.GetEntityWithSpec(spec);
+        //     var spec = new ProductsWithTypesAndBrandsSpecification(id);
+        //    return await _productRepo.GetEntityWithSpec(spec);
+
+            var query = new ProductDetailsQuery
+            {
+                Id = id
+            };
+            var vm = await Mediator.Send(query);
+            return Ok(vm);
         }
 
         [HttpGet("brands")]
