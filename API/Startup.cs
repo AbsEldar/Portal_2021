@@ -25,6 +25,7 @@ namespace API
         {
             services.AddScoped<IPortalContext, PortalContext>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
             services.AddDbContext<PortalContext>(x => 
                 x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
