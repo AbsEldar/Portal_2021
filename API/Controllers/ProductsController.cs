@@ -11,6 +11,8 @@ using Core.Mediatr.Products.Queries.ProductDetails;
 using MediatR;
 using AutoMapper;
 using Core.Mediatr.Products.Queries.ProductList;
+using API.Models.Product;
+using Core.Mediatr.Products.Commands.CreateProduct;
 
 namespace API.Controllers
 {
@@ -73,6 +75,16 @@ namespace API.Controllers
         {
             return Ok(await _typeRepo.ListAllAsync());
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Guid>> Create([FromBody] CreateProductDto createProcuctDto)
+        {
+            var command = _mapper.Map<CreateProductCommand>(createProcuctDto);
+           var productId = await Mediator.Send(command);
+            return Ok(productId);
+        }
+
+        
     }
 
 }

@@ -17,6 +17,12 @@ namespace Core.Mediatr.Products.Commands.CreateProduct
         }
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
+            // Guid brandId = Guid.Empty; 
+            // var brand = Guid.TryParse(request.ProductBrandId.ToString(), out brandId);
+
+            // Guid typeId = Guid.Empty; 
+            // var type = Guid.TryParse(request.ProductTypeId.ToString(), out typeId);
+
             var product = new Product
             {
                 Id = Guid.NewGuid(),
