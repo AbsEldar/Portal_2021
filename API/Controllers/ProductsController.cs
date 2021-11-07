@@ -13,6 +13,8 @@ using AutoMapper;
 using Core.Mediatr.Products.Queries.ProductList;
 using API.Models.Product;
 using Core.Mediatr.Products.Commands.CreateProduct;
+using Core.Mediatr.Products.Commands.UpdateProduct;
+using Core.Mediatr.Products.Commands.DeleteProduct;
 
 namespace API.Controllers
 {
@@ -82,6 +84,22 @@ namespace API.Controllers
             var command = _mapper.Map<CreateProductCommand>(createProcuctDto);
            var productId = await Mediator.Send(command);
             return Ok(productId);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateProductDto updateProductDto)
+        {
+            var command = _mapper.Map<UpdateProductCommand>(updateProductDto);
+            await Mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var command = new DeleteProductCommand{Id = id};
+            await Mediator.Send(command);
+            return NoContent();
         }
 
         
