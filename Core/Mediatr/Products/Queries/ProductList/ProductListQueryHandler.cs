@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -23,6 +24,10 @@ namespace Core.Mediatr.Products.Queries.ProductList
         public async Task<ProductListVm> Handle(ProductListQuery request, CancellationToken cancellationToken)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification();
+            if(request.Sort.Any())
+            {
+                spec = new ProductsWithTypesAndBrandsSpecification(request.Sort, request.BrandId, request.TypeId);
+            }
             var products = await _productRepo.ListAsync(spec);
 
             var plv = new ProductListVm();

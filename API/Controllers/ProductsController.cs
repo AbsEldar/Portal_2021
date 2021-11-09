@@ -38,7 +38,8 @@ namespace API.Controllers
             _mapper = mapper;
             _productRepo = productRepo;
         }
-        [HttpGet]
+
+         [HttpGet]
         public async Task<ActionResult<ProductListVm>> GetProducts()
         {
             
@@ -46,7 +47,21 @@ namespace API.Controllers
             // var products = await _productRepo.ListAsync(spec);
             // return Ok(products);
 
-             var query = new ProductListQuery{};
+             var query = new ProductListQuery{Sort = ""};
+            var vm = await Mediator.Send(query);
+            return Ok(vm);
+
+        }
+
+        [HttpGet("withSort")]
+        public async Task<ActionResult<ProductListVm>> GetProducts(string sort, Guid? brandId, Guid? typeId)
+        {
+            
+            // var spec = new ProductsWithTypesAndBrandsSpecification();
+            // var products = await _productRepo.ListAsync(spec);
+            // return Ok(products);
+
+             var query = new ProductListQuery{Sort = sort, BrandId = brandId, TypeId = typeId};
             var vm = await Mediator.Send(query);
             return Ok(vm);
 
