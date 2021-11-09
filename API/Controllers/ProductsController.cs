@@ -15,6 +15,8 @@ using API.Models.Product;
 using Core.Mediatr.Products.Commands.CreateProduct;
 using Core.Mediatr.Products.Commands.UpdateProduct;
 using Core.Mediatr.Products.Commands.DeleteProduct;
+using Core.Specifications;
+using Core.Helpers;
 
 namespace API.Controllers
 {
@@ -39,33 +41,27 @@ namespace API.Controllers
             _productRepo = productRepo;
         }
 
+        //  [HttpGet]
+        // public async Task<ActionResult<ProductListVm>> GetProducts([FromQuery]ProductSpecParams productParams)
+        // {
+            
+        //      var query = new ProductListQuery{ProductSpecParams = productParams};
+        //     var vm = await Mediator.Send(query);
+        //     return Ok(vm);
+
+        // }
+
          [HttpGet]
-        public async Task<ActionResult<ProductListVm>> GetProducts()
+        public async Task<ActionResult<ProductListVm>> GetProducts([FromQuery]ProductSpecParams productParams)
         {
             
-            // var spec = new ProductsWithTypesAndBrandsSpecification();
-            // var products = await _productRepo.ListAsync(spec);
-            // return Ok(products);
-
-             var query = new ProductListQuery{Sort = ""};
+            var query = new ProductListQuery{ProductSpecParams = productParams};
             var vm = await Mediator.Send(query);
             return Ok(vm);
 
         }
 
-        [HttpGet("withSort")]
-        public async Task<ActionResult<ProductListVm>> GetProducts(string sort, Guid? brandId, Guid? typeId)
-        {
-            
-            // var spec = new ProductsWithTypesAndBrandsSpecification();
-            // var products = await _productRepo.ListAsync(spec);
-            // return Ok(products);
-
-             var query = new ProductListQuery{Sort = sort, BrandId = brandId, TypeId = typeId};
-            var vm = await Mediator.Send(query);
-            return Ok(vm);
-
-        }
+       
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDetailsVm>> GetProduct(Guid id)

@@ -54,6 +54,7 @@ namespace API
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
+                    // policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
                     policy.AllowAnyOrigin();

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.Interfaces;
+using Core.Specifications;
 using Core.Specifications.SpecModels;
 using Domains;
 using MediatR;
@@ -23,15 +24,19 @@ namespace Core.Mediatr.Products.Queries.ProductList
         }
         public async Task<ProductListVm> Handle(ProductListQuery request, CancellationToken cancellationToken)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification();
-            if(request.Sort.Any())
-            {
-                spec = new ProductsWithTypesAndBrandsSpecification(request.Sort, request.BrandId, request.TypeId);
-            }
+            var spec = new ProductsWithTypesAndBrandsSpecification(request.ProductSpecParams);
+            var countSpec = new ProductWithFiltersForCountSpecification(request.ProductSpecParams);
+            var totalItems = await _productRepo.CountAsync(countSpec);
             var products = await _productRepo.ListAsync(spec);
 
+            
+           
+
             var plv = new ProductListVm();
-            plv.Products = _mapper.Map<IList<ProductLookupDto>>(products);
+            plv.Data = _mapper.Map<IList<ProductLookupDto>>(products);
+            plv.TotalItems = totalItems;
+            plv.PageIndex = request.ProductSpecParams.PageIndex;
+            plv.PageSize = request.ProductSpecParams.PageSize;
 
             
             return plv;
